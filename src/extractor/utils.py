@@ -1,25 +1,17 @@
-import re
-import json
-import os
+import fitz  # PyMuPDF
 
-def clean_text(text):
-    return re.sub(r"\s+", " ", text.strip())
+def extract_text_blocks(pdf_path):
+    doc = fitz.open(pdf_path)
+    blocks = []
 
-def is_potential_heading(text):
-    return len(text) > 3 and len(text.split()) > 1 and not text.strip().isdigit()
-
-def map_font_sizes_to_levels(top_sizes):
-    levels = {}
-    if len(top_sizes) > 0:
-        levels[top_sizes[0]] = "H1"
-    if len(top_sizes) > 1:
-        levels[top_sizes[1]] = "H2"
-    if len(top_sizes) > 2:
-        levels[top_sizes[2]] = "H3"
-    return levels
-
-def save_json(data, output_dir, filename):
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, filename.replace(".pdf", ".json"))
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+    for page_num, page in enumerate(doc):
+        text_blocks = page.get_text("blocks")
+        for block in text_blocks:
+            content = block[4].strip()
+            if len(content.split()) > 5:
+                blocks.append({
+                    "page": page_num + 1,
+                    "section_title": content.split("\n")[0][:100],
+                    "text": content
+                })
+    return blocks
