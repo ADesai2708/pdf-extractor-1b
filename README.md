@@ -19,7 +19,6 @@ pdf-extractor-1b/
 ├── Dockerfile
 └── README.md                        # ← This file
 
-
 ## 📦 Run with Docker
 
 ```bash
