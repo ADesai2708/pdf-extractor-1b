@@ -2,6 +2,8 @@ from extractor.persona_extractor import process_documents
 from datetime import datetime
 import json
 import os
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 persona = "PhD Researcher in Computational Biology"
 job = "Prepare a literature review on GNNs, datasets, and benchmarks"
